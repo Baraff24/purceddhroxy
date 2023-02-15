@@ -4,8 +4,8 @@ WORKDIR /purceddhroxy
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "proxy.py", "-d", "${DESTINATION_HOST}", "-p", "${DESTINATION_PORT}"]
+CMD ["python", "proxy.py"]
