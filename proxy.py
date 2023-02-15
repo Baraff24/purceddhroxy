@@ -8,8 +8,12 @@ PACKET_QUEUE = deque(maxlen=100)
 FILTERS = [
     # Detect a potential SQL injection vulnerability in the packet
     lambda packet: "SELECT" in packet[Raw].load.decode("utf-8"),
+
     # Detect a potential XSS vulnerability in the packet
-    lambda packet: "<script>" in packet[Raw].load.decode("utf-8")
+    lambda packet: "<script>" in packet[Raw].load.decode("utf-8"),
+
+    # Detect a potential vulnerability in the packet User-Agent header
+    lambda packet: "Python" in packet[Raw].load.decode("utf-8")
 
     # Add more filters here
 ]

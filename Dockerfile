@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9-alpine
 
 WORKDIR /purceddhroxy
 
@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./purceddhroxy.py" ]
+CMD ["python", "proxy.py", "-d", "${DESTINATION_HOST}", "-p", "${DESTINATION_PORT}"]
