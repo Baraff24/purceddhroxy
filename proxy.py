@@ -1,3 +1,4 @@
+import logging
 from scapy.all import *
 from collections import deque
 
@@ -38,6 +39,7 @@ def return_dns(pkt):
 
 # Define the function to filter the packets
 def filter_packets(pkt):
+
     # Apply the filters to the packet
     for f in FILTERS:
         if f(pkt):
@@ -65,10 +67,27 @@ def start_proxy():
     # Interface of the network card to sniff the packets
     iface = "eth0"
 
-    # Start the sniffing process
-    sniff(iface=iface, prn=filter_packets)
-    # Start the routing process
-    sniff(iface=iface, prn=route_packets)
+    # Check if the interface exists
+    try:
+        get_if_hwaddr(iface)
+    except OSError:
+        logging.error(f"Interface {iface} does not exist")
+        exit(1)
+
+    # Check if the interface is up
+    try:
+        get_if_addr(iface)
+    except OSError:
+        logging.error(f"Interface {iface} is down")
+        exit(1)
+
+    try:
+        # Start the sniffing process
+        sniff(iface=iface, prn=filter_packets)
+        # Start the routing process
+        sniff(iface=iface, prn=route_packets)
+    except Exception as e:
+        logging.error('An error occurred: %s', str(e))
 
 
 if __name__ == "__main__":
