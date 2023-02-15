@@ -4,7 +4,7 @@ services:
   purceddhroxy:
     build: Dockerfile
     volumes:
-      - ./purceddhroxy:/app/purceddhroxy
+      - ./filters:/purceddhroxy/filters
     restart: always
 
   proxy:

@@ -3,9 +3,9 @@ from collections import deque
 
 from scapy.layers.dns import DNS
 from scapy.layers.http import HTTPRequest
-from scapy.layers.inet import IP, TCP
+from scapy.layers.inet import IP
 
-from filters import *
+from filters.filters import *
 
 # Define the queue to store the packets
 PACKET_QUEUE = deque(maxlen=100)
