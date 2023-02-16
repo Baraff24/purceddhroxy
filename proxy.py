@@ -5,7 +5,7 @@ from scapy.layers.dns import DNS
 from scapy.layers.http import HTTPRequest
 from scapy.layers.inet import IP
 
-from filters.filters import *
+import filters.filters
 
 # Define the queue to store the packets
 PACKET_QUEUE = deque(maxlen=100)
@@ -29,10 +29,11 @@ def filter_packets(pkt):
 
     # Apply the filters to the packet
     # Apply filters to packet
-    for func in locals().values():
-        if callable(func) and func.__module__ == "filters":
-            pkt = func(pkt)
-            if pkt:
+    for i in dir(filters.filters):
+        fil = getattr(filters.filters, i)
+        if callable(fil):
+            fil(pkt)
+            if fil(pkt):
                 # If the packet fails any of the filters, print the packet and drop it
                 print(
                     f"Potential attack detected! Packet from {pkt[IP].src} to {pkt[IP].dst}. HTTP request: {return_url(pkt)}. DNS request: {return_dns(pkt)}")
