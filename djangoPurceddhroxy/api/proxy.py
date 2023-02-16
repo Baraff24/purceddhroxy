@@ -1,39 +1,26 @@
 from scapy.all import *
 from collections import deque
 
-from scapy.layers.dns import DNS
-from scapy.layers.http import HTTPRequest
 from scapy.layers.inet import IP
 
-import filters.filters
+from .functions import return_url, return_dns
+from .models import Filter
 
 # Define the queue to store the packets
 PACKET_QUEUE = deque(maxlen=100)
 
 
-def return_url(pkt):
-    if pkt.haslayer(HTTPRequest):
-        url = pkt[HTTPRequest].Host.decode() + pkt[HTTPRequest].Path.decode()
-        return url
-
-
-def return_dns(pkt):
-    if pkt.haslayer(DNS):
-        if pkt[DNS].qr == 0:
-            query = pkt[DNS].qd.qname.decode()
-            return query
-
-
 # Define the function to filter the packets
 def filter_packets(pkt):
-
     # Apply the filters to the packet
     # Apply filters to packet
-    for i in dir(filters.filters):
-        fil = getattr(filters.filters, i)
-        if callable(fil):
-            fil(pkt)
-            if fil(pkt):
+    filters = Filter.objects.filter(is_active=True)
+    for fil in filters:
+        function = fil.function
+        if function:
+            func = eval(function)
+            func(pkt)
+            if func(pkt):
                 # If the packet fails any of the filters, print the packet and drop it
                 print(f"Potential attack detected! Packet from {pkt[IP].src} to {pkt[IP].dst}. "
                       f"HTTP request: {return_url(pkt)}."
