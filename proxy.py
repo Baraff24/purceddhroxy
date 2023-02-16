@@ -31,7 +31,7 @@ def filter_packets(pkt):
     # Apply filters to packet
     for i in dir(filters.filters):
         fil = getattr(filters.filters, i)
-        if callable(fil):
+        if callable(fil) and i.startswith("filter"):
             fil(pkt)
             if fil(pkt):
                 # If the packet fails any of the filters, print the packet and drop it
