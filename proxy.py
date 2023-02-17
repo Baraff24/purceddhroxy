@@ -7,9 +7,6 @@ from scapy.layers.inet import IP
 
 import filters.filters
 
-# Define the queue to store the packets
-PACKET_QUEUE = deque(maxlen=100)
-
 
 def return_url(pkt):
     if pkt.haslayer(HTTPRequest):
@@ -41,18 +38,9 @@ def filter_packets(pkt):
                     k.write(f"{time.time()}: {pkt.summary()}\n")
                 pkt.drop()
                 return None
-            else:
-                # If the packet passes all the filters, add it to the queue
-                PACKET_QUEUE.append(pkt)
-                return pkt
-
-
-# Define the function to route the packets
-def route_packets(pkt):
     if pkt is not None:
-        # Route
-        packet_in_queue = PACKET_QUEUE.popleft()
-        send(packet_in_queue, verbose=False)
+        # If the packet passes all the filters, add it to the queue
+        return pkt
 
 
 # Start the proxy
@@ -77,8 +65,6 @@ def start_proxy():
     try:
         # Start the sniffing process
         sniff(iface=iface, prn=filter_packets)
-        # Start the routing process
-        sniff(iface=iface, prn=route_packets)
     except Exception as e:
         logging.error('An error occurred: %s', str(e))
 
