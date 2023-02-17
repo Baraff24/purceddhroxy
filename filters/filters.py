@@ -6,8 +6,8 @@ from scapy.packet import Raw
 
 def filter_sql_injection(pkt):
     if pkt.haslayer(TCP) and pkt.haslayer(Raw):
-        load = pkt.getlayer(Raw).load
-        if "select" in load or "insert" in load or "update" in load or "delete" in load:
+        pkt_str = str(pkt.getlayer(Raw), encoding="utf-8", errors="ignore")
+        if "select" in pkt_str or "insert" in pkt_str or "update" in pkt_str or "delete" in pkt_str:
             return True
         else:
             return False
@@ -15,8 +15,8 @@ def filter_sql_injection(pkt):
 
 def filter_xss(pkt):
     if pkt.haslayer(TCP) and pkt.haslayer(Raw):
-        load = pkt.getlayer(Raw).load
-        if "<script>" in load:
+        pkt_str = str(pkt.getlayer(Raw), encoding="utf-8", errors="ignore")
+        if "<script>" in pkt_str or "</script>" in pkt_str:
             return True
         else:
             return False
@@ -24,8 +24,8 @@ def filter_xss(pkt):
 
 def filter_user_agent(pkt):
     if pkt.haslayer(TCP) and pkt.haslayer(Raw):
-        load = pkt.getlayer(Raw).load
-        if "Python" in load:
+        pkt_str = str(pkt.getlayer(Raw), encoding="utf-8", errors="ignore")
+        if "Python" in pkt_str:
             return True
         else:
             return False
