@@ -29,10 +29,9 @@ def filter_packets(pkt):
                     k.write(f"{time.time()}: {pkt.summary()}\n")
                 pkt.drop()
                 return None
-            else:
-                # If the packet passes all the filters, add it to the queue
-                PACKET_QUEUE.append(pkt)
-                return pkt
+    if pkt is not None:
+        # If the packet passes all the filters, add it to the queue
+        return pkt
 
 
 # Define the function to route the packets
@@ -41,6 +40,8 @@ def route_packets(pkt):
         # Route
         packet_in_queue = PACKET_QUEUE.popleft()
         send(packet_in_queue, verbose=False)
+        pkt_model = Packet(src_ip=pkt[IP].src, dst_ip=pkt[IP].dst, payload=str(pkt), dangerous=False)
+        pkt_model.save()
 
 
 # Start the proxy
