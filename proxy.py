@@ -1,6 +1,4 @@
 from scapy.all import *
-from collections import deque
-
 from scapy.layers.dns import DNS
 from scapy.layers.http import HTTPRequest
 from scapy.layers.inet import IP
@@ -23,13 +21,15 @@ def return_dns(pkt):
 
 # Define the function to filter the packets
 def filter_packets(pkt):
-
     # Apply the filters to the packet
     # Apply filters to packet
     for i in dir(filters.filters):
         fil = getattr(filters.filters, i)
         if callable(fil) and i.startswith("filter"):
             fil(pkt)
+            print(f"Filter {i} applied to packet {pkt.summary()}")
+            print(f"Filter {i} returned {fil(pkt)}")
+            time.sleep(1)  # Sleep for 1 second to make the output more readable - remove this line in production
             if fil(pkt):
                 # If the packet fails any of the filters, print the packet and drop it
                 print(

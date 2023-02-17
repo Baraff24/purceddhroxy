@@ -11,6 +11,8 @@ def filter_sql_injection(pkt):
             return True
         else:
             return False
+    else:
+        return False
 
 
 def filter_xss(pkt):
@@ -20,6 +22,8 @@ def filter_xss(pkt):
             return True
         else:
             return False
+    else:
+        return False
 
 
 def filter_user_agent(pkt):
@@ -29,3 +33,5 @@ def filter_user_agent(pkt):
             return True
         else:
             return False
+    else:
+        return False
