@@ -34,4 +34,4 @@ class Packet(models.Model):
 
     def __str__(self):
         """Unicode's representation of Packet."""
-        return self.packet
+        return self.src_ip + " -> " + self.dst_ip + " " + str(self.dangerous)
