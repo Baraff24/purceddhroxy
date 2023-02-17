@@ -46,7 +46,11 @@ def filter_packets(pkt):
 # Start the proxy
 def start_proxy():
     # Interface of the network card to sniff the packets
-    iface = "eth0"
+
+    # wireless interface for mac
+    iface = "en0"
+    # interface for linux
+    # iface = "eth0"
 
     # Check if the interface exists
     try:
