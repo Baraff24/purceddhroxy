@@ -23,7 +23,7 @@ class Packet(models.Model):
     src_ip = models.CharField(max_length=255)
     dst_ip = models.CharField(max_length=255)
     payload = models.TextField()
-    dangerous = models.BooleanField(default=False)
+    dangerous = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

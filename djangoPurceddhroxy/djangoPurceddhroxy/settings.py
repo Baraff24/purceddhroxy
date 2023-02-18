@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'djangoPurceddhroxy.wsgi.application'
+
+# WebSocket config
+ASGI_APPLICATION = 'myproject.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database
