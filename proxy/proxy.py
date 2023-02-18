@@ -1,8 +1,9 @@
 from scapy.all import *
 from scapy.layers.inet import IP
 
-from .functions import return_url, return_dns
-from .models import Filter
+from djangoapp.api.functions import return_url, return_dns
+from djangoapp.api.models import Filter
+from djangoapp.djangoPurceddhroxy.settings import DJANGO_WS_URL
 
 import websocket
 import json
@@ -11,7 +12,7 @@ import json
 # Define the function to route the packets to the Django server
 def send_packet_to_django(pkt):
     # Start the WebSocket connection with the Django server
-    ws = websocket.create_connection("ws://localhost:8000/ws/packets/")
+    ws = websocket.create_connection(DJANGO_WS_URL)
 
     # Send the packet to the Django server as a JSON object
     ws.send(json.dumps(pkt))

@@ -2,8 +2,8 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from scapy.layers.l2 import Ether
 
-from djangoPurceddhroxy.api.models import Packet
-from djangoPurceddhroxy.api.serializers import PacketSerializer
+from .models import Packet
+from .serializers import PacketSerializer
 
 
 class PacketConsumer(AsyncWebsocketConsumer):

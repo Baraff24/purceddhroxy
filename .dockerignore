@@ -1,0 +1,7 @@
+logs/
+.git
+*.md
+.cache
+
+# Ignore the .gitignore file itself
+.gitignore

@@ -1,18 +1,17 @@
 version: '3'
 
 services:
-  purceddhroxy:
-    build: Dockerfile
-    volumes:
-      - ./filters:/purceddhroxy/filters
+  djangoapp:
+    build: .
+    command: "./starter.sh"
+    ports:
+      - "8000:8000"
     restart: always
 
   proxy:
     build: .
-    command:
-      -
-    ports:
-      - "8080:8080"
+    command: "python proxy/proxy.py"
+    environment:
+      - DJANGO_WS_URL=ws://django:8000/ws/packets/
     depends_on:
-      - purceddhroxy
-    restart: always
+      - djangoapp
