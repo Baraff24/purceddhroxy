@@ -2,6 +2,7 @@ logs/
 .git
 *.md
 .cache
+.venv
 
 # Ignore the .gitignore file itself
 .gitignore

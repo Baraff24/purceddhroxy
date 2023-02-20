@@ -11,8 +11,10 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
     && rm -rf /tmp/requirements.txt
 
-WORKDIR .
+WORKDIR /app
 COPY . .
+
+ENV PYTHONPATH /app
 
 RUN chmod +x ./starter.sh
 CMD ["sh", "./starter.sh"]

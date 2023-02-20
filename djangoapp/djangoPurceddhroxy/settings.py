@@ -122,4 +122,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DJANGO_SETTINGS_MODULE = os.getenv('DJANGO_SETTINGS_MODULE', 'djangoPurceddhroxy.settings')
+
 DJANGO_WS_URL = os.getenv('DJANGO_WS_URL', 'ws://localhost:8000/ws/packets/')

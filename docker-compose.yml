@@ -3,7 +3,11 @@ version: '3'
 services:
   djangoapp:
     build: .
-    command: "./starter.sh"
+    command: "sh ./starter.sh"
+    environment:
+      - DJANGO_SETTINGS_MODULE=djangoPurceddhroxy.settings
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
     restart: always

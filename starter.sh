@@ -2,7 +2,7 @@
 
 # This script is used to start the docker container
 # shellcheck disable=SC2164
-cd /djangoapp
+cd ./djangoapp
 python manage.py makemigrations
 echo -e "\e[34m >>> Migrating changes \e[97m"
 python manage.py migrate

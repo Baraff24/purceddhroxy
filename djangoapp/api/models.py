@@ -9,7 +9,7 @@ class Filter(models.Model):
 
     class Meta:
         """Meta definition for Filter."""
-
+        app_label = 'api'
         verbose_name = 'Filter'
         verbose_name_plural = 'Filters'
 
@@ -28,7 +28,7 @@ class Packet(models.Model):
 
     class Meta:
         """Meta definition for Packet."""
-
+        app_label = 'api'
         verbose_name = 'Packet'
         verbose_name_plural = 'Packets'
 
