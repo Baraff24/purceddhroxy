@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
@@ -14,6 +14,7 @@ class FiltersListAPI(generics.ListAPIView):
     serializer_class = FilterSerializer
     queryset = Filter.objects.all()
     search_fields = ['name', 'function', 'is_active']
+    filter_backends = [filters.SearchFilter]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -57,3 +58,4 @@ class PacketsListAPI(generics.ListAPIView):
     serializer_class = PacketSerializer
     queryset = Packet.objects.all()
     search_fields = ['src_ip', 'dst_ip', 'payload', 'dangerous', 'created_at']
+    filter_backends = [filters.SearchFilter]
