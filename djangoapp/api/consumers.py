@@ -16,8 +16,7 @@ class PacketConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         # Parse packet from text_data
         ether = Ether(text_data)
-        print("MERDA A PALATE")
-        print(ether)
+
         # Save packet to database as Django model object
         pkt_data = PacketSerializer.process_packet(ether)
         pkt_obj = Packet.objects.create(**pkt_data)
