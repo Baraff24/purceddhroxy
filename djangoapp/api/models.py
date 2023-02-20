@@ -20,8 +20,9 @@ class Filter(models.Model):
 
 class Packet(models.Model):
     """Model definition for Packet."""
-    src_ip = models.CharField(max_length=255)
-    dst_ip = models.CharField(max_length=255)
+    src_ip = models.CharField(max_length=17)
+    dst_ip = models.CharField(max_length=17)
+    type = models.CharField(max_length=5)
     payload = models.TextField()
     dangerous = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

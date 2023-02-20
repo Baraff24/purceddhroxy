@@ -11,3 +11,6 @@
 
 - Run the "docker stop" command to stop the running container:
 `docker-compose stop`
+
+- Run the "createsuperuser" command to create new admin user:
+`docker-compose run web python djangoapp/manage.py createsuperuser`

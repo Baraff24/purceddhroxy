@@ -1,5 +1,4 @@
 from scapy.all import *
-from scapy.layers.inet import IP
 
 import websocket
 import json
@@ -8,17 +7,21 @@ import sys
 from django.conf import settings
 import os
 import django
+from scapy.layers.l2 import Ether
+
 sys.path.append('/app/djangoapp')
 DJANGO_SETTINGS = os.getenv('DJANGO_SETTINGS_MODULE', 'djangoPurceddhroxy.settings')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', DJANGO_SETTINGS)
 django.setup()
 
 from api.models import Filter
-from api.functions import return_url, return_dns
 
 
 # Define the function to route the packets to the Django server
 def send_packet_to_django(pkt):
+
+    print("Sending packet to Django server...")
+
     # Start the WebSocket connection with the Django server
     ws = websocket.create_connection(settings.DJANGO_WS_URL)
 
@@ -36,25 +39,39 @@ def send_packet_to_django(pkt):
 
 # Define the function to filter the packets
 def filter_packets(pkt):
+
+    print(f"Packet received: {pkt.summary()}")
+
     # Apply the filters to the packet
     filters = Filter.objects.filter(is_active=True)
-    for fil in filters:
-        function = fil.function
-        if function:
-            func = eval(function)
-            func(pkt)
-            if func(pkt):
-                # If the packet fails any of the filters, print the packet and drop it
-                print(f"Potential attack detected! Packet from {pkt[IP].src} to {pkt[IP].dst}. "
-                      f"HTTP request: {return_url(pkt)}."
-                      f"DNS request: {return_dns(pkt)}")
-                with open("alerts.log", "a") as k:
-                    k.write(f"{time.time()}: {pkt.summary()}\n")
+    if pkt.haslayer(Ether):
+        print(f"Packet dropped: {pkt.summary()}")
+        pkt = None
+        return pkt
 
-                # Send the packet to the Django server and transform the packet to a Django model object
-                send_packet_to_django(pkt)
-                pkt.drop()
-                return None
+    if len(filters) > 0 and pkt is not None:
+        for fil in filters:
+            function = fil.function
+            try:
+                compiled_function = compile(function, '<string>', 'exec')
+                namespace = {pkt: pkt}
+                if exec(compiled_function, namespace):
+                    # If the packet fails any of the filters, print the packet and drop it
+                    print(f"Potential attack detected! {pkt.summary()}")
+                    with open("alerts.log", "a") as k:
+                        k.write(f"{time.time()}: {pkt.summary()}\n")
+
+                    # Send the packet to the Django server and transform the packet to a Django model object
+                    send_packet_to_django(pkt)
+
+                    print(f"Packet dropped: {pkt.summary()}")
+                    pkt = None
+                    return pkt
+            except Exception as e:
+                print(e)
+                print(f"Error in filter {fil.name}.")
+                continue
+
     if pkt is not None:
         # If the packet passes all the filters, add it to the queue
         return pkt
