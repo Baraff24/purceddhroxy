@@ -1,6 +1,8 @@
 from scapy.layers.dns import DNS
 from scapy.layers.http import HTTPRequest
-from scapy.layers.inet import IP, TCP
+from scapy.layers.l2 import Ether
+from scapy.layers.inet import IP, TCP, UDP
+
 from .models import Packet
 from .serializers import PacketSerializer
 
@@ -20,17 +22,30 @@ def return_dns(pkt):
 
 def parse_packet(pkt):
     # Use Scapy to extract relevant data from the packet
-    if pkt.haslayer(IP):
+
+    if pkt.haslayer(Ether):
+        source_address = pkt[Ether].src
+        destination_address = pkt[Ether].dst
+        protocol = pkt[Ether].type
+        payload = str(pkt[Ether].payload)
+
+    elif pkt.haslayer(IP):
         source_address = pkt[IP].src
         destination_address = pkt[IP].dst
         protocol = pkt[IP].proto
         payload = str(pkt[TCP].payload)
 
-    elif pkt.haslayer(DNS):
-        source_address = pkt[DNS].an.rdata
-        destination_address = pkt[DNS].qd.qname
-        protocol = pkt[DNS].qr
-        payload = str(pkt[DNS].qd.qname)
+    elif pkt.haslayer(TCP):
+        source_address = pkt[TCP].sport
+        destination_address = pkt[TCP].dport
+        protocol = pkt[TCP].proto
+        payload = str(pkt[TCP].payload)
+
+    elif pkt.haslayer(UDP):
+        source_address = pkt[UDP].sport
+        destination_address = pkt[UDP].dport
+        protocol = pkt[UDP].proto
+        payload = str(pkt[UDP].payload)
 
     elif pkt.haslayer(HTTPRequest):
         source_address = pkt[HTTPRequest].Host.decode()
