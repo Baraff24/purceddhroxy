@@ -1,17 +1,21 @@
-FROM python:3.9-alpine
+FROM python:3.10-slim
 
-RUN mkdir /purceddhroxy
-WORKDIR /purceddhroxy
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
-COPY requirements.txt .
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tcpdump python3-dev build-essential libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt \
+    && rm -rf /tmp/requirements.txt
 
+WORKDIR /app
 COPY . .
 
-RUN chmod +x /app/proxy.py
+ENV PYTHONPATH /app
 
-# Set up a volume for the filters file
-VOLUME /filters
-
-CMD ["python", "proxy.py"]
+RUN chmod +x ./starter.sh
+CMD ["sh", "./starter.sh"]
+CMD ["python", "proxy/proxy.py"]
