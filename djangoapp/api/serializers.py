@@ -16,21 +16,3 @@ class PacketSerializer(serializers.Serializer):
     dst_ip = serializers.CharField(max_length=17)
     type = serializers.CharField(max_length=5)
     payload = serializers.CharField()
-
-    @staticmethod
-    def process_packet(ether):
-        if ether:
-            return {
-                'src_ip': ether.dst,
-                'dst_ip': ether.src,
-                'type': hex(ether.type),
-                'payload': str(ether.payload)
-            }
-        else:
-            return None
-
-    def create(self, validated_data):
-        return Packet.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        pass
