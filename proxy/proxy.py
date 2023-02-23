@@ -44,10 +44,6 @@ def filter_packets(pkt):
 
     # Apply the filters to the packet
     filters = Filter.objects.filter(is_active=True)
-    if pkt.haslayer(Ether):
-        print(f"Packet dropped: {pkt.summary()}")
-        pkt = None
-        return pkt
 
     if len(filters) > 0 and pkt is not None:
         for fil in filters:
