@@ -3,7 +3,7 @@ version: '3'
 services:
   djangoapp:
     build: .
-    command: "sh ./starter.sh"
+    command: "sh ./commands/starter.sh"
     environment:
       - DJANGO_SETTINGS_MODULE=djangoPurceddhroxy.settings
     volumes:
@@ -14,8 +14,13 @@ services:
 
   proxy:
     build: .
-    command: "python proxy/proxy.py"
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    command: "sh ./commands/iptablesSetup.sh"
     environment:
       - DJANGO_WS_URL=ws://django:8000/ws/packets/
     depends_on:
       - djangoapp
+    network_mode: "host"
