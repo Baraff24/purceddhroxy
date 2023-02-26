@@ -68,7 +68,12 @@ def filter_packets(pkt):
                 print(e)
                 print(f"Error in filter {fil.name}.")
                 continue
-    pkt.accept()
+    try:
+        # Accept the packet
+        pkt.accept()
+    except Exception as e:
+        print(e)
+        print(f"Error accepting packet.")
     return pkt
 
 
@@ -76,7 +81,7 @@ def filter_packets(pkt):
 nfqueue = NetfilterQueue()
 
 # bind netfilterqueue to iptables rule
-nfqueue.bind(0, filter_packets)
+nfqueue.bind(1, filter_packets)
 
 
 # Start the proxy
@@ -103,7 +108,7 @@ def start_proxy():
         sniff(iface=iface, prn=filter_packets)
 
         # Start the NetfilterQueue process
-        nfqueue.run()
+        nfqueue.run(copymode=False)
 
         # Start the routing process to the Django server
         sniff(iface=iface, prn=send_packet_to_django)

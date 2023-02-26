@@ -15,12 +15,9 @@ services:
   proxy:
     build: .
     privileged: true
-    cap_add:
-      - NET_ADMIN
-      - SYS_ADMIN
+    network_mode: "host"
     command: "sh ./commands/iptablesSetup.sh"
     environment:
       - DJANGO_WS_URL=ws://django:8000/ws/packets/
     depends_on:
       - djangoapp
-    network_mode: "host"
